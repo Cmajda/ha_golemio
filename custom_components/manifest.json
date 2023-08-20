@@ -1,0 +1,10 @@
+{
+	"domain": "golemio",
+	"name": "Golemio CZ",
+	"documentation": "https://github.com/Cmajda/ha_cez_distribuce",
+	"issue_tracker": "https://github.com/Cmajda/ha_cez_distribuce/issues",
+	"dependencies": [],
+	"codeowners": [ "@cmajda" ],
+	"version": "0.0.1b",
+	"requirements": []
+}

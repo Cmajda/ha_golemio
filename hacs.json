@@ -1,0 +1,14 @@
+{
+	"name": "Golemio CZ",
+	"render_readme": true,
+	"description": "Golemio Praha",
+	"version": "0.0.1b",
+	"domains": [
+		"sensor"
+	],
+	"country": "CZ",
+	"hide": false,
+	"i18n": false,
+	"hacs": true,
+	"homeassistant": "0.110.0"
+}
