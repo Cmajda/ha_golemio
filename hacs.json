@@ -2,7 +2,7 @@
 	"name": "golemio",
 	"render_readme": true,
 	"description": "Golemio Praha",
-	"version": "0.0.1b",
+	"version": "0.0.3",
 	"domains": [
 		"sensor"
 	],
