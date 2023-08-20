@@ -1,7 +1,7 @@
 {
 	"name": "golemio",
 	"render_readme": true,
-	"description": "Golemio Praha",
+	"description": "Golemio",
 	"version": "0.0.3",
 	"domains": [
 		"sensor"
