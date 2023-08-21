@@ -107,10 +107,10 @@ class GolemSensor(SensorEntity):
         elif self._data_key == "percent_calculated":
             data_name = "volná kapacita"
             description = self._container["trash_type"].get("description", "Unknown Trash")
-            return f"{self._name} {self._index} {description} {data_name} {self._index}"
+            return f"{self._name} {self._index} {description} {data_name}"
         else:
             data_name = "Unknown Data"
-            return f"{self._name} {self._index} {data_name} {self._index}"
+            return f"{self._name} {self._index} {data_name}"
     
     # Přátelský název senzoru
     @property
@@ -118,14 +118,14 @@ class GolemSensor(SensorEntity):
         if self._data_key == "next_pick":
             description = self._container["trash_type"].get("description", "Unknown Trash")
             data_name = "datum odvozu"
-            return f"{self._name} {self._index} {description} {data_name} {self._index}"
+            return f"{self._name} {self._index} {description} {data_name}"
         elif self._data_key == "percent_calculated":
             data_name = "volná kapacita"
             description = self._container["trash_type"].get("description", "Unknown Trash")
-            return f"{data_name} {self._index} {description} {self._index}"
+            return f"{data_name} {self._index} {description}"
         else:
             data_name = "Unknown Data"
-            return f"{data_name} {self._index} {self._index}"
+            return f"{data_name} {self._index}"
 
     # Hodnota senzoru
     @property
