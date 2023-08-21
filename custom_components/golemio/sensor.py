@@ -7,12 +7,18 @@ from homeassistant.util import Throttle
 import voluptuous as vol
 import homeassistant.helpers.config_validation as cv
 
+# Interval mezi aktualizacemi dat (minimálně jednou za minutu)
 MIN_TIME_BETWEEN_SCANS = timedelta(seconds=60)
+
+# Inicializace loggeru
 _LOGGER = logging.getLogger(__name__)
 
+# Název domény, pod kterou bude integrace registrována
 DOMAIN = "golemio"
-CONF_NAME = "name"
-CONF_CONTAINERID = "container_id"
+
+# Nastavení schématu platformy pro konfiguraci
+CONF_NAME = "name"  # Název senzoru (volitelné, přepisuje se z konfigurace)
+CONF_CONTAINERID = "container_id"  # ID kontejneru
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
         vol.Required(CONF_NAME): cv.string,
@@ -21,27 +27,31 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     }
 )
 
+# Funkce pro nastavení platformy
 def setup_platform(hass, config, add_entities, discovery_info=None):
     name = config.get(CONF_NAME)
     token = config.get(CONF_TOKEN)
     containerid = config.get(CONF_CONTAINERID)
     entities = []
-    
-    response_data = call_api_get(token,containerid)
+
+    # Volání API pro získání dat
+    response_data = call_api_get(token, containerid)
     if response_data:
         containers = response_data["features"][0]["properties"]["containers"]
         for i, container in enumerate(containers):
+            # Vytvoření instancí senzorů a přidání do seznamu entit
             entities.append(GolemSensor(hass, name, i, container, token, containerid, "next_pick", "Next Pick"))
             entities.append(GolemSensor(hass, name, i, container, token, containerid, "percent_calculated", "Percent Calculated"))
     
     add_entities(entities)
 
+# Funkce pro volání API a získání dat
 def call_api_get(token, containerid):
     api_headers = {
         "accept": "application/json",
         "X-Access-Token": token
     }
-    api_params = {"id": containerid}  # Použije se hodnota předaná z konfigurace
+    api_params = {"id": containerid}
     url = "https://api.golemio.cz/v2/sortedwastestations"
     try:
         response = requests.get(url, headers=api_headers, params=api_params)
@@ -51,6 +61,7 @@ def call_api_get(token, containerid):
         _LOGGER.error("Chyba při volání API: %s", e)
         return None
 
+# Třída reprezentující senzor
 class GolemSensor(SensorEntity):
     def __init__(self, hass, name, index, container, token, containerid, data_key, friendly_name):
         """Inicializace senzoru."""
@@ -64,11 +75,12 @@ class GolemSensor(SensorEntity):
         self._friendly_name = friendly_name
         self.update()
 
-
+    # Generování unikátního ID senzoru
     @property
     def unique_id(self):
         return f"{DOMAIN}_{self._friendly_name.lower().replace(' ', '_')}_{self._index}"
 
+    # Nastavení ikony senzoru na základě datového klíče
     @property
     def icon(self):
         if self._data_key == "next_pick":
@@ -76,10 +88,12 @@ class GolemSensor(SensorEntity):
         elif self._data_key == "percent_calculated":
             return "mdi:percent"
 
+    # Indikace, zda senzor má být pravidelně dotazován
     @property
     def should_poll(self):
         return True
     
+    # Generování názvu senzoru na základě datového klíče
     @property
     def name(self):
         if self._data_key == "next_pick":
@@ -91,6 +105,7 @@ class GolemSensor(SensorEntity):
 
         return f"{self._name} {data_name} {self._index}"
     
+    # Generování přátelského názvu senzoru na základě datového klíče
     @property
     def friendly_name(self):
         if self._data_key == "next_pick":
@@ -102,6 +117,7 @@ class GolemSensor(SensorEntity):
 
         return f"{data_name} {self._index}"
 
+    # Získání hodnoty senzoru
     @property
     def native_value(self):
         if self._data_key == "next_pick":
@@ -113,8 +129,9 @@ class GolemSensor(SensorEntity):
         
         return "n/a"
 
+    # Aktualizace dat senzoru s omezením pomocí Throttle
     @Throttle(MIN_TIME_BETWEEN_SCANS)
     def update(self):
-        response_data = call_api_get(self._token,self._containerid)
+        response_data = call_api_get(self._token, self._containerid)
         if response_data:
             self._container = response_data["features"][0]["properties"]["containers"][self._index]
