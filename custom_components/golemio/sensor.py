@@ -64,6 +64,9 @@ def call_api_get(token, containerid):
         return None
 
 # Třída pro senzor
+# ... (předchozí kód)
+
+# Třída pro senzor
 class GolemSensor(SensorEntity):
     def __init__(self, hass, name, index, container, token, containerid, data_key, friendly_name):
         # Inicializace senzoru
@@ -98,25 +101,31 @@ class GolemSensor(SensorEntity):
     @property
     def name(self):
         if self._data_key == "next_pick":
-            data_name = "Next Pick"
+            description = self._container["trash_type"].get("description", "Unknown Trash")
+            data_name = "datum odvozu"
+            return f"{self._name} {self._index} {description} {data_name}"
         elif self._data_key == "percent_calculated":
-            data_name = "Percent Calculated"
+            data_name = "volná kapacita"
+            description = self._container["trash_type"].get("description", "Unknown Trash")
+            return f"{self._name} {self._index} {description} {data_name} {self._index}"
         else:
             data_name = "Unknown Data"
-
-        return f"{self._name} {data_name} {self._index}"
+            return f"{self._name} {self._index} {data_name} {self._index}"
     
     # Přátelský název senzoru
     @property
     def friendly_name(self):
         if self._data_key == "next_pick":
-            data_name = "Next Pick"
+            description = self._container["trash_type"].get("description", "Unknown Trash")
+            data_name = "datum odvozu"
+            return f"{self._name} {self._index} {description} {data_name} {self._index}"
         elif self._data_key == "percent_calculated":
-            data_name = "Percent Calculated"
+            data_name = "volná kapacita"
+            description = self._container["trash_type"].get("description", "Unknown Trash")
+            return f"{data_name} {self._index} {description} {self._index}"
         else:
             data_name = "Unknown Data"
-
-        return f"{data_name} {self._index}"
+            return f"{data_name} {self._index} {self._index}"
 
     # Hodnota senzoru
     @property
@@ -139,3 +148,4 @@ class GolemSensor(SensorEntity):
         response_data = call_api_get(self._token, self._containerid)
         if response_data:
             self._container = response_data["features"][0]["properties"]["containers"][self._index]
+
