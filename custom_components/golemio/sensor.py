@@ -11,6 +11,7 @@ import homeassistant.helpers.config_validation as cv
 MIN_TIME_BETWEEN_SCANS = timedelta(seconds=60)
 _LOGGER = logging.getLogger(__name__)
 
+# Definice konstant a nastavení platformy
 DOMAIN = "golemio"
 CONF_NAME = "name"
 CONF_CONTAINERID = "container_id"
@@ -24,6 +25,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
 
 # Funkce pro nastavení platformy
 def setup_platform(hass, config, add_entities, discovery_info=None):
+    # Získání konfiguračních hodnot
     name = config.get(CONF_NAME)
     token = config.get(CONF_TOKEN)
     containerid = config.get(CONF_CONTAINERID)
@@ -32,13 +34,17 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     # Získání dat z API
     response_data = call_api_get(token, containerid)
     if response_data:
+        # Procházení jednotlivých kontejnerů
         containers = response_data["features"][0]["properties"]["containers"]
         for i, container in enumerate(containers):
-            # Přidání senzoru pouze pokud existují klíče "next_pick" a "percent_calculated"
-            if "next_pick" in container["cleaning_frequency"] and "last_measurement" in container:
+            # Vytvoření senzoru pouze pro kontejnery s klíči "next_pick" nebo "percent_calculated"
+            if "last_measurement" in container:
                 entities.append(GolemSensor(hass, name, i, container, token, containerid, "next_pick", "Next Pick"))
                 entities.append(GolemSensor(hass, name, i, container, token, containerid, "percent_calculated", "Percent Calculated"))
+            elif "cleaning_frequency" in container and "next_pick" in container["cleaning_frequency"]:
+                entities.append(GolemSensor(hass, name, i, container, token, containerid, "next_pick", "Next Pick"))
     
+    # Přidání vytvořených senzorů do entitního systému Home Assistant
     add_entities(entities)
 
 # Funkce pro získání dat z API
@@ -60,7 +66,7 @@ def call_api_get(token, containerid):
 # Třída pro senzor
 class GolemSensor(SensorEntity):
     def __init__(self, hass, name, index, container, token, containerid, data_key, friendly_name):
-        """Inicializace senzoru."""
+        # Inicializace senzoru
         self.hass = hass
         self._name = name
         self._index = index
@@ -120,10 +126,14 @@ class GolemSensor(SensorEntity):
             return self._container["cleaning_frequency"].get(self._data_key, "n/a")
         elif self._data_key == "percent_calculated":
             # Vrátí hodnotu klíče "percent_calculated" nebo "n/a" pokud neexistuje
-            return self._container["last_measurement"].get(self._data_key, "n/a")
+            if "last_measurement" in self._container:
+                return self._container["last_measurement"].get(self._data_key, "n/a")
+            elif "cleaning_frequency" in self._container and "next_pick" in self._container["cleaning_frequency"]:
+                return self._container["cleaning_frequency"].get("next_pick", "n/a")
         
         return "n/a"
 
+    # Metoda pro periodickou aktualizaci senzoru
     @Throttle(MIN_TIME_BETWEEN_SCANS)
     def update(self):
         response_data = call_api_get(self._token, self._containerid)
