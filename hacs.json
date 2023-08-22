@@ -10,5 +10,6 @@
 	"hide": false,
 	"i18n": false,
 	"hacs": true,
+	"iot_class": "cloud_polling",
 	"homeassistant": "0.110.0"
 }
