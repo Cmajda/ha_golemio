@@ -1,14 +1,5 @@
 {
-	"name": "golemio",
-	"render_readme": true,
-	"version": "0.0.4",
-	"domains": [
-		"sensor"
-	],
-	"country": "CZ",
-	"hide": false,
-	"i18n": false,
-	"hacs": true,
-	"iot_class": "cloud_polling",
-	"homeassistant": "0.110.0"
+	"name": "Prague waste separation points",
+	"homeassistant": "0.110.0",
+	"country": [ "CZ" ]
 }
