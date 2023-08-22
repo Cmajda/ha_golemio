@@ -1,11 +1,11 @@
 {
 	"domain": "golemio",
 	"name": "Golemio",
-	"documentation": "https://github.com/Cmajda/ha_cez_distribuce",
-	"issue_tracker": "https://github.com/Cmajda/ha_cez_distribuce/issues",
-	"dependencies": [],
 	"codeowners": [ "@cmajda" ],
-	"version": "0.0.4",
+	"dependencies": [],
+	"documentation": "https://github.com/Cmajda/ha_cez_distribuce",
+	"iot_class": "cloud_polling",
+	"issue_tracker": "https://github.com/Cmajda/ha_cez_distribuce/issues",
 	"requirements": [],
-	"iot_class": "cloud_polling"
+	"version": "0.0.4"
 }
