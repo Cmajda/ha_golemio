@@ -1,6 +1,6 @@
 # Prague waste separation point for HA using GolemioAPI
 
-![entitiesCard](entitiesCard.png)
+![entitiesCard](EntitiesCard.png)
 ## Krok 1 - Registrace API Golemio:
 Registrace: [https://api.golemio.cz/api-keys/auth/sign-up](https://api.golemio.cz/api-keys/auth/sign-up)  
 ## Krok 2 - Zjištěni ID skupiny kontejnerů:
