@@ -6,6 +6,7 @@ test*.py
 
 # C extensions
 *.so
+*test*
 
 # Distribution / packaging
 .Python
