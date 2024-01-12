@@ -40,11 +40,12 @@ Registrace: [https://api.golemio.cz/api-keys/auth/sign-up](https://api.golemio.c
 	golemio: "<TOKEN>"
 	```
 - nakonfigurovat senzor configuration.yaml 
-	```yaml 
-	- platform: golemio
-	  name: conc
-	  token: !secret golemio
-	  container_id: 3497
+	```yaml
+        sensor: 
+	  - platform: golemio
+	    name: conc
+	    token: !secret golemio
+	    container_id: 3497
 	```
 - Restartovat HA
 - Vytvořit kartu entity (příklad záleží na počtu kontejnerů). 
