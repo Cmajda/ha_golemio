@@ -8,7 +8,7 @@ import voluptuous as vol
 import homeassistant.helpers.config_validation as cv
 
 # Minimální doba mezi aktualizacemi senzorů
-MIN_TIME_BETWEEN_SCANS = timedelta(seconds=60)
+MIN_TIME_BETWEEN_SCANS = timedelta(seconds=600)
 _LOGGER = logging.getLogger(__name__)
 
 # Definice konstant a nastavení platformy
