@@ -83,7 +83,7 @@ class GolemSensor(SensorEntity):
     # Unikátní ID senzoru
     @property
     def unique_id(self):
-        return f"{DOMAIN}_{self._friendly_name.lower().replace(' ', '_')}_{self._index}"
+        return f"{DOMAIN}_{self._friendly_name.lower().replace(' ', '_')}_{self._containerid}_{self._index}"
 
     # Ikona senzoru
     @property
