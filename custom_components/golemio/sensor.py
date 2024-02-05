@@ -4,11 +4,12 @@ from datetime import timedelta
 from homeassistant.components.sensor import PLATFORM_SCHEMA, SensorEntity
 from homeassistant.const import CONF_NAME, CONF_TOKEN
 from homeassistant.util import Throttle
+from ratelimit import limits, sleep_and_retry
 import voluptuous as vol
 import homeassistant.helpers.config_validation as cv
 
 # Minimální doba mezi aktualizacemi senzorů
-MIN_TIME_BETWEEN_SCANS = timedelta(seconds=600)
+MIN_TIME_BETWEEN_SCANS = timedelta(seconds=300)
 _LOGGER = logging.getLogger(__name__)
 
 # Definice konstant a nastavení platformy
@@ -48,6 +49,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     add_entities(entities)
 
 # Funkce pro získání dat z API
+@sleep_and_retry
+@limits(calls=20, period=10)  # Omezení na 20 volání za 10 sekund
 def call_api_get(token, containerid):
     api_headers = {
         "accept": "application/json",
@@ -62,9 +65,6 @@ def call_api_get(token, containerid):
     except requests.exceptions.RequestException as e:
         _LOGGER.error("Chyba při volání API: %s", e)
         return None
-
-# Třída pro senzor
-# ... (předchozí kód)
 
 # Třída pro senzor
 class GolemSensor(SensorEntity):
